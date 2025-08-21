@@ -45,6 +45,57 @@ mack_creek_lengths <- mack_creek_vertebrates %>%
   ungroup()
 ```
 
+```{r}
+### REPREX EXAMPLE
+
+mack_subset <- mack_creek_vertebrates %>% 
+  select(SPECIES, LENGTH1, LENGTH2, SAMPLEDATE, SECTION) %>% 
+  filter(SECTION == "CC") %>% 
+  slice_head(n = 10)
+
+datapasta::df_paste(mack_subset)
+
+
+
+data.frame(
+  stringsAsFactors = FALSE,
+                                                            SPECIES = c("ONCL","ONCL","ONCL",
+                                                                        "ONCL","ONCL",
+                                                                        "ONCL","ONCL","ONCL",
+                                                                        "ONCL","ONCL"),
+                                                            LENGTH1 = c(58,
+                                                                        61,89,58,93,86,
+                                                                        107,131,103,117),
+                                                            LENGTH2 = c(NA,
+                                                                        NA,NA,NA,NA,NA,
+                                                                        NA,NA,NA,NA),
+                                                         SAMPLEDATE = c("10/7/87","10/7/87",
+                                                                        "10/7/87","10/7/87",
+                                                                        "10/7/87","10/7/87",
+                                                                        "10/7/87",
+                                                                        "10/7/87","10/7/87",
+                                                                        "10/7/87"),
+                                                            SECTION = c("CC",
+                                                                        "CC","CC","CC",
+                                                                        "CC","CC","CC",
+                                                                        "CC","CC","CC")
+                                                 )
+
+mack_creek_lengths <- mack_creek_vertebrates %>% 
+  clean_names() %>% 
+  select(year:sampledate) %>% 
+  filter(section == "CC") %>% 
+  mutate(across(where(is.character, tolower))) %>% 
+  drop_na(species) %>% 
+  group_by(species) %>% 
+  summarize(mean_length_cm = mean(length1, na.rm = TRUE),
+            sd_length_cm = sd(length1, na.rm = TRUE)) %>% 
+  ungroup()
+
+
+```
+
+
 ### reprex 2
 
 Identify what is causing the problem in the code below (there's only one thing). Then, create a very simple reprex that would help yourself, future you, or a colleague fix the problem. **Post your reprex as an issue in your own fork on GitHub.**
@@ -54,11 +105,18 @@ Identify what is causing the problem in the code below (there's only one thing).
 mack_creek_vertebrates %>% 
   clean_names() %>% 
   filter(species == "ONCL") %>% 
-  ggplot(aes(x = length1, y = weight)) +
+  ggplot(aes(x = length1, y = weight, shape = CLIP, color = SPECIES)) +
          geom_point(aes(shape = 12), color = "purple") +
          theme_minimal() +
          labs(x = "Cutthroat trout length (cm)",
               y = "Weight (g)")
 ```
+
+```{r}
+
+
+
+```
+
 
 ## End
