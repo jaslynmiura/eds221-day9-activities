@@ -102,11 +102,13 @@ Identify what is causing the problem in the code below (there's only one thing).
 
 ```{r}
 # Example 2:
-mack_creek_vertebrates %>% 
+mack <- mack_creek_vertebrates %>% 
   clean_names() %>% 
-  filter(species == "ONCL") %>% 
-  ggplot(aes(x = length1, y = weight, shape = CLIP, color = SPECIES)) +
-         geom_point(aes(shape = 12), color = "purple") +
+  filter(species == "ONCL")
+
+ggplot(data = mack, 
+       aes(x = length1, y = weight, shape = sitecode, color = species)) +
+         geom_point() +
          theme_minimal() +
          labs(x = "Cutthroat trout length (cm)",
               y = "Weight (g)")
@@ -114,6 +116,25 @@ mack_creek_vertebrates %>%
 
 ```{r}
 
+mack_subset <- mack_creek_vertebrates %>% 
+  select(SPECIES, LENGTH1, WEIGHT, SITECODE, SECTION) %>% 
+  filter(SPECIES == "ONCL") %>% 
+  slice_head(n = 10)
+
+datapasta::df_paste(mack_subset)
+
+data.frame(
+  stringsAsFactors = FALSE,
+              SPECIES = c("ONCL","ONCL","ONCL",
+                          "ONCL","ONCL","ONCL","ONCL","ONCL","ONCL","ONCL"),
+           LENGTH1 = c(58, 61, 89, 58, 93, 86, 107, 131, 103, 117),
+            WEIGHT = c(1.75, 1.95, 5.6, 2.15, 6.9, 5.9, 10.5, 20.6, 9.55, 13),
+             SITECODE = c("MACKCC-L","MACKCC-L",
+                          "MACKCC-L","MACKCC-L","MACKCC-L","MACKCC-L",
+                          "MACKCC-L","MACKCC-L","MACKCC-L","MACKCC-L"),
+              SECTION = c("CC","CC","CC","CC",
+                          "CC","CC","CC","CC","CC","CC")
+   )
 
 
 ```
